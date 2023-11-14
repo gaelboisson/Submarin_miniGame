@@ -9,8 +9,16 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    // Récupération de la taille de l'écran
+    SDL_DisplayMode Screen;
+    if (SDL_GetCurrentDisplayMode(0, &Screen) != 0) {
+        SDL_Log("Erreur lors de la récupération du mode d'affichage : %s", SDL_GetError());
+        SDL_Quit();
+        return -1;
+    }
+
     // Création de la fenêtre SDL
-    SDL_Window* fenetre = SDL_CreateWindow("Ma fenêtre SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_Window* fenetre = SDL_CreateWindow("Ma fenêtre SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen.w, Screen.h, SDL_WINDOW_SHOWN);
     if (!fenetre) {
         SDL_Log("Erreur lors de la création de la fenêtre : %s", SDL_GetError());
         SDL_Quit();
