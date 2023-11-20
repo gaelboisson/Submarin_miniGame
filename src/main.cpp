@@ -3,9 +3,17 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
-    // Initialisation de SDL
+    // Initialisation de SDL video
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        SDL_Log("Erreur lors de l'initialisation de SDL : %s", SDL_GetError());
+        SDL_Log("Erreur lors de l'initialisation de SDL video : %s", SDL_GetError());
+        return -1;
+    }
+
+    // Initialisation de SDL_image
+    if (!(IMG_Init(IMG_INIT_PNG)))
+    {
+        std::cout << "Erreur lors de l'initialisation de SDL image : %s" << SDL_GetError() << std::endl;
+        SDL_Quit();
         return -1;
     }
 
@@ -17,13 +25,56 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // Création de la fenêtre SDL
-    SDL_Window* fenetre = SDL_CreateWindow("Ma fenêtre SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen.w, Screen.h, SDL_WINDOW_SHOWN);
+    // Calcul de la taille de la fenêtre
+    int windowWidth = Screen.w * 0.9;
+    int windowHeight = Screen.h * 0.9;
+
+    // Calcul de la position de la fenêtre pour centrer celle-ci sur l'écran
+    int windowPosX = (Screen.w - windowWidth) / 2;
+    int windowPosY = (Screen.h - windowHeight) / 2;
+
+
+    // Création de la fenêtre SDL avec la taille et la position calculées
+    SDL_Window* fenetre = SDL_CreateWindow("Ma fenêtre SDL", windowPosX, windowPosY, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
     if (!fenetre) {
         SDL_Log("Erreur lors de la création de la fenêtre : %s", SDL_GetError());
         SDL_Quit();
         return -1;
     }
+
+//------------------------------------------------------------------------------------------
+
+ // Initialisation du chargement d'images avec SDL_image
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        SDL_Log("Erreur lors de l'initialisation de SDL_image : %s", IMG_GetError());
+        SDL_DestroyWindow(fenetre);
+        SDL_Quit();
+        return -1;
+    }
+
+    // Création du renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        SDL_Log("Erreur lors de la création du renderer : %s", SDL_GetError());
+        SDL_DestroyWindow(fenetre);
+        IMG_Quit();
+        SDL_Quit();
+        return -1;
+    }
+
+    // Chargement de l'image du sprite
+    SDL_Texture* submarineTexture = IMG_LoadTexture(renderer, "res/gfx/submarine.png");
+    if (!submarineTexture) {
+        SDL_Log("Erreur lors du chargement du sprite : %s", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(fenetre);
+        IMG_Quit();
+        SDL_Quit(); 
+        return -1;
+    }
+
+    
+//-----------------------------------------------------------------------------------
 
     // Boucle principale
     bool running = true;
@@ -35,7 +86,14 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Dessiner ici...
+        // Effacer l'écran
+        SDL_RenderClear(renderer);
+
+        // Dessiner le sprite dans le coin supérieur gauche (0, 0)
+        SDL_RenderCopy(renderer, submarineTexture, NULL, NULL);
+
+        // Mise à jour de l'affichage
+        SDL_RenderPresent(renderer);
     }
 
     // Libération des ressources et fermeture de SDL
