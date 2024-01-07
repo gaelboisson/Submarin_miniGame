@@ -2,6 +2,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
+
+
 int main(int argc, char* argv[]) {
     // Initialisation de SDL video
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -35,7 +37,7 @@ int main(int argc, char* argv[]) {
 
 
     // Création de la fenêtre SDL avec la taille et la position calculées
-    SDL_Window* fenetre = SDL_CreateWindow("Ma fenêtre SDL", windowPosX, windowPosY, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
+    SDL_Window* fenetre = SDL_CreateWindow("Submarine Mini Game", windowPosX, windowPosY, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
     if (!fenetre) {
         SDL_Log("Erreur lors de la création de la fenêtre : %s", SDL_GetError());
         SDL_Quit();
@@ -73,6 +75,14 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    // Définition des nouvelles largeur et hauteur
+    int newWidth = 48;
+    int newHeight = 32;
+
+
+    // Redimensionner la texture du sous-marin à la nouvelle taille
+    SDL_Rect destinationRect = { 0, 0, newWidth, newHeight };
+
     
 //-----------------------------------------------------------------------------------
 
@@ -90,13 +100,15 @@ int main(int argc, char* argv[]) {
         SDL_RenderClear(renderer);
 
         // Dessiner le sprite dans le coin supérieur gauche (0, 0)
-        SDL_RenderCopy(renderer, submarineTexture, NULL, NULL);
+        SDL_RenderCopy(renderer, submarineTexture, NULL, &destinationRect);
 
         // Mise à jour de l'affichage
         SDL_RenderPresent(renderer);
     }
 
     // Libération des ressources et fermeture de SDL
+
+    SDL_DestroyTexture(submarineTexture); // Libérer la texture originale du sous-marin
     SDL_DestroyWindow(fenetre);
     SDL_Quit();
     return 0;
