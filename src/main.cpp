@@ -2,6 +2,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
+SDL_Rect spriteRect;
+
 
 
 int main(int argc, char* argv[]) {
@@ -46,9 +48,6 @@ int main(int argc, char* argv[]) {
 
 //------------------------------------------------------------------------------------------
 
-
-//------------------------------------------------------------------------------------------
-
  // Initialisation du chargement d'images avec SDL_image
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         SDL_Log("Erreur lors de l'initialisation de SDL_image : %s", IMG_GetError());
@@ -85,72 +84,25 @@ int main(int argc, char* argv[]) {
 
     // Redimensionner la texture du sous-marin à la nouvelle taille
     SDL_Rect destinationRect = { 0, 0, newWidth, newHeight };
-
-    // Définition des nouvelles largeur et hauteur
-    int newWidth = 48;
-    int newHeight = 32;
-
-
-    // Positionner et redimensionner la texture du sous-marin à la nouvelle taille
-    SDL_Rect destinationRect = { 640, 0, newWidth, newHeight };
-
     
 //-----------------------------------------------------------------------------------
-
-// Création de variables booléennes pour gérer les mouvements du joueur
-    bool moveUp = false;
-    bool moveLeft = false;
-    bool moveDown = false;
-    bool moveRight = false;
 
     // Boucle principale
     bool running = true;
     while (running) {
         SDL_Event event;
-        // gestion des évenements
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) 
+            if (event.type == SDL_QUIT) {
                 running = false;
-            else if (event.type == SDL_KEYDOWN)
-            {
-                // attribution des touches / évènements lorsqu'on appuye
-                switch (event.key.keysym.sym)
-                {
-                    case SDLK_z:
-                        moveUp = true;
-                        break;
-                    case SDLK_q:
-                        moveLeft = true;
-                        break;
-                    case SDLK_s:
-                        moveDown = true;
-                        break;
-                    case SDLK_d:
-                        moveRight = true;
-                        break;
-                }
             }
-            else if (event.type == SDL_KEYUP)
-            {
-                // évènement lorsqu'on relache
-                switch (event.key.keysym.sym)
-                {
-                    case SDLK_z:
-                        moveUp = false;
-                        break;
-                    case SDLK_q:
-                        moveLeft = false;
-                        break;
-                    case SDLK_s:
-                        moveDown = false;
-                        break;
-                    case SDLK_d:
-                        moveRight = false;
-                        break;
-                }
-            }
-        }
 
+            if (event.type == SDL_KEYDOWN) {
+                if (SDLK_RIGHT)  
+                destinationRect.x += 10;
+                
+            }
+
+        }
 
         // Effacer l'écran
         SDL_RenderClear(renderer);
