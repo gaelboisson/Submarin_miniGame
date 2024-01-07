@@ -2,8 +2,6 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-SDL_Rect spriteRect;
-
 
 
 int main(int argc, char* argv[]) {
@@ -83,7 +81,7 @@ int main(int argc, char* argv[]) {
 
 
     // Redimensionner la texture du sous-marin à la nouvelle taille
-    SDL_Rect destinationRect = { 0, 0, newWidth, newHeight };
+    SDL_Rect destinationRect = { 640, 0, newWidth, newHeight };
     
 //-----------------------------------------------------------------------------------
 
@@ -95,13 +93,29 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) {
                 running = false;
             }
+            
 
             if (event.type == SDL_KEYDOWN) {
-                if (SDLK_RIGHT)  
-                destinationRect.x += 10;
-                
+                switch (event.key.keysym.sym) {
+                case SDLK_UP:
+                    destinationRect.y -= 10;
+                    break;
+                case SDLK_DOWN:
+                    destinationRect.y += 10;
+                    destinationRect.y += 5;
+                    break;
+                case SDLK_LEFT:
+                    destinationRect.x -= 10;
+                    destinationRect.y += 5;
+                    break;
+                case SDLK_RIGHT:
+                    destinationRect.x += 10;
+                    destinationRect.y += 5;
+                    break;
+                default:
+                    break;
+                }
             }
-
         }
 
         // Effacer l'écran
